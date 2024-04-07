@@ -1,0 +1,133 @@
+basePath: /api/v1
+definitions:
+  dto.AuthResponseDto:
+    properties:
+      access:
+        type: string
+      refresh:
+        type: string
+    type: object
+  dto.LoginRequestDto:
+    properties:
+      login:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  dto.RegisterRequestDto:
+    properties:
+      email:
+        type: string
+      nickname:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - nickname
+    - password
+    type: object
+host: localhost:8090
+info:
+  contact: {}
+  title: Auth Service API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequestDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            refreshToken:
+              description: token
+              type: string
+          schema:
+            $ref: '#/definitions/dto.AuthResponseDto'
+      summary: Login
+      tags:
+      - auth
+  /auth/logout:
+    delete:
+      consumes:
+      - application/json
+      description: Logout
+      parameters:
+      - description: Refresh token
+        in: header
+        name: refreshToken
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Logout
+      tags:
+      - auth
+  /auth/refresh:
+    get:
+      consumes:
+      - application/json
+      description: Refresh
+      parameters:
+      - description: Refresh token
+        in: header
+        name: refreshToken
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          headers:
+            refreshToken:
+              description: token
+              type: string
+          schema:
+            $ref: '#/definitions/dto.AuthResponseDto'
+      summary: Refresh
+      tags:
+      - auth
+  /auth/registration:
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      parameters:
+      - description: Register request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequestDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.AuthResponseDto'
+      summary: Register new user
+      tags:
+      - auth
+swagger: "2.0"
