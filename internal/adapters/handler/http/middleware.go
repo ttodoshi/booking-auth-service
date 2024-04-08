@@ -1,7 +1,7 @@
-package handler
+package http
 
 import (
-	"booking-auth-service/internal/core/errors"
+	"booking-auth-service/internal/core/ports/errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"

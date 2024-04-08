@@ -1,13 +1,13 @@
 package ports
 
 import (
-	"booking-auth-service/internal/adapters/dto"
 	"booking-auth-service/internal/core/domain"
+	"booking-auth-service/internal/core/ports/dto"
 )
 
 type AuthService interface {
-	Register(registerRequestDto dto.RegisterRequestDto, session string) (access string, refresh string, err error)
-	Login(loginRequestDto dto.LoginRequestDto, session string) (access string, refresh string, err error)
+	Register(registerRequestDto dto.RegisterRequestDto) (access string, refresh string, err error)
+	Login(loginRequestDto dto.LoginRequestDto) (access string, refresh string, err error)
 	Refresh(oldRefreshToken string) (access string, refresh string, err error)
 	Logout(refreshToken string)
 }

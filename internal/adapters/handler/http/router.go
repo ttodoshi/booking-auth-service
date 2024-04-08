@@ -1,6 +1,7 @@
-package handler
+package http
 
 import (
+	"booking-auth-service/internal/adapters/handler/http/api"
 	"booking-auth-service/pkg/logging"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -9,10 +10,10 @@ import (
 
 type Router struct {
 	log logging.Logger
-	*AuthHandler
+	*api.AuthHandler
 }
 
-func NewRouter(log logging.Logger, authHandler *AuthHandler) *Router {
+func NewRouter(log logging.Logger, authHandler *api.AuthHandler) *Router {
 	return &Router{
 		log:         log,
 		AuthHandler: authHandler,

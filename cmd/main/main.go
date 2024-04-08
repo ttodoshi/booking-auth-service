@@ -2,7 +2,8 @@ package main
 
 import (
 	_ "booking-auth-service/docs"
-	"booking-auth-service/internal/adapters/handler"
+	"booking-auth-service/internal/adapters/handler/http"
+	"booking-auth-service/internal/adapters/handler/http/api"
 	"booking-auth-service/internal/adapters/repository/mongodb"
 	"booking-auth-service/internal/core/servises"
 	"booking-auth-service/pkg/discovery"
@@ -51,7 +52,7 @@ func initDatabase(log logging.Logger) {
 	}
 }
 
-func initRouter(log logging.Logger) *handler.Router {
+func initRouter(log logging.Logger) *http.Router {
 	refreshTokenRepository := mongodb.NewRefreshTokenRepository()
 	userRepository := mongodb.NewUserRepository()
 
@@ -59,9 +60,9 @@ func initRouter(log logging.Logger) *handler.Router {
 		userRepository, refreshTokenRepository,
 		log,
 	)
-	return handler.NewRouter(
+	return http.NewRouter(
 		log,
-		handler.NewAuthHandler(
+		api.NewAuthHandler(
 			authService, log,
 		),
 	)

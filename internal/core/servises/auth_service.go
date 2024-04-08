@@ -1,11 +1,11 @@
 package servises
 
 import (
-	"booking-auth-service/internal/adapters/dto"
 	"booking-auth-service/internal/core/domain"
-	"booking-auth-service/internal/core/errors"
 	"booking-auth-service/internal/core/ports"
-	"booking-auth-service/internal/core/utils"
+	"booking-auth-service/internal/core/ports/dto"
+	"booking-auth-service/internal/core/ports/errors"
+	"booking-auth-service/pkg/jwt"
 	"booking-auth-service/pkg/logging"
 	"booking-auth-service/pkg/password"
 	"github.com/jinzhu/copier"
@@ -25,7 +25,7 @@ func NewAuthService(userRepo ports.UserRepository, tokenRepo ports.RefreshTokenR
 	}
 }
 
-func (s *AuthService) Register(registerRequestDto dto.RegisterRequestDto, session string) (access string, refresh string, err error) {
+func (s *AuthService) Register(registerRequestDto dto.RegisterRequestDto) (access string, refresh string, err error) {
 	var user domain.User
 
 	registerRequestDto.Password, err = password.HashPassword(registerRequestDto.Password)
@@ -51,7 +51,7 @@ func (s *AuthService) Register(registerRequestDto dto.RegisterRequestDto, sessio
 	return
 }
 
-func (s *AuthService) Login(loginRequestDto dto.LoginRequestDto, session string) (access string, refresh string, err error) {
+func (s *AuthService) Login(loginRequestDto dto.LoginRequestDto) (access string, refresh string, err error) {
 	var user domain.User
 	user, err = s.userRepo.GetUserByNickname(loginRequestDto.Login)
 	if err != nil {
@@ -98,8 +98,14 @@ func (s *AuthService) Refresh(oldRefreshToken string) (access string, refresh st
 }
 
 func (s *AuthService) generateTokens(user domain.User) (accessToken string, refreshToken string, err error) {
-	accessToken, err = utils.GenerateAccessJWT(user)
-	refreshToken, err = utils.GenerateRefreshJWT(user.ID.Hex())
+	accessToken, err = jwt.GenerateAccessJWT(
+		user.ID.Hex(),
+		jwt.Claim{
+			Name:  "nickname",
+			Value: user.Nickname,
+		},
+	)
+	refreshToken, err = jwt.GenerateRefreshJWT(user.ID.Hex())
 	return
 }
 

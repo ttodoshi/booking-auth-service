@@ -2,8 +2,8 @@ package mongodb
 
 import (
 	"booking-auth-service/internal/core/domain"
-	"booking-auth-service/internal/core/errors"
 	"booking-auth-service/internal/core/ports"
+	"booking-auth-service/internal/core/ports/errors"
 	"fmt"
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"

@@ -1,9 +1,9 @@
-package handler
+package api
 
 import (
-	"booking-auth-service/internal/adapters/dto"
-	"booking-auth-service/internal/core/errors"
 	"booking-auth-service/internal/core/ports"
+	"booking-auth-service/internal/core/ports/dto"
+	"booking-auth-service/internal/core/ports/errors"
 	"booking-auth-service/pkg/logging"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -37,9 +37,8 @@ func NewAuthHandler(svc ports.AuthService, log logging.Logger) *AuthHandler {
 func (h *AuthHandler) Register(c *gin.Context) {
 	h.log.Debug("received register request")
 
-	sessionCookie, err := c.Cookie("SESSION")
 	var registerRequestDto dto.RegisterRequestDto
-	if err = c.ShouldBindJSON(&registerRequestDto); err != nil {
+	if err := c.ShouldBindJSON(&registerRequestDto); err != nil {
 		err = c.Error(&errors.BodyMappingError{
 			Message: "error in request body",
 		})
@@ -47,7 +46,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	access, refresh, err := h.svc.Register(registerRequestDto, sessionCookie)
+	access, refresh, err := h.svc.Register(registerRequestDto)
 	if err != nil {
 		err = c.Error(err)
 		return
@@ -82,9 +81,8 @@ func (h *AuthHandler) Register(c *gin.Context) {
 func (h *AuthHandler) Login(c *gin.Context) {
 	h.log.Debug("received login request")
 
-	sessionCookie, err := c.Cookie("SESSION")
 	var loginRequestDto dto.LoginRequestDto
-	if err = c.ShouldBindJSON(&loginRequestDto); err != nil {
+	if err := c.ShouldBindJSON(&loginRequestDto); err != nil {
 		err = c.Error(&errors.BodyMappingError{
 			Message: "error in request body",
 		})
@@ -92,7 +90,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	access, refresh, err := h.svc.Login(loginRequestDto, sessionCookie)
+	access, refresh, err := h.svc.Login(loginRequestDto)
 	if err != nil {
 		err = c.Error(err)
 		return

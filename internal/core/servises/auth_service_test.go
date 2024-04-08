@@ -1,11 +1,11 @@
 package servises
 
 import (
-	"booking-auth-service/internal/adapters/dto"
 	"booking-auth-service/internal/core/domain"
-	"booking-auth-service/internal/core/errors"
+	"booking-auth-service/internal/core/ports/dto"
+	"booking-auth-service/internal/core/ports/errors"
 	"booking-auth-service/internal/core/ports/mocks"
-	"booking-auth-service/internal/core/utils"
+	"booking-auth-service/pkg/jwt"
 	"booking-auth-service/pkg/logging/nop"
 	. "booking-auth-service/pkg/password"
 	"github.com/brianvoe/gofakeit/v6"
@@ -47,7 +47,7 @@ func TestRegister(t *testing.T) {
 			Nickname: gofakeit.Username(),
 			Email:    gofakeit.Email(),
 			Password: gofakeit.Password(true, true, true, true, false, 8),
-		}, gofakeit.UUID())
+		})
 		assert.NoError(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -57,7 +57,7 @@ func TestRegister(t *testing.T) {
 			Nickname: "already_taken",
 			Email:    gofakeit.Email(),
 			Password: gofakeit.Password(true, true, true, true, false, 4),
-		}, gofakeit.UUID())
+		})
 		assert.Error(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -67,7 +67,7 @@ func TestRegister(t *testing.T) {
 			Nickname: gofakeit.Username(),
 			Email:    "already_taken",
 			Password: gofakeit.Password(true, true, true, true, false, 4),
-		}, gofakeit.UUID())
+		})
 		assert.Error(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -118,7 +118,7 @@ func TestLogin(t *testing.T) {
 		_, _, err = authService.Login(dto.LoginRequestDto{
 			Login:    user.Nickname,
 			Password: password,
-		}, gofakeit.UUID())
+		})
 		assert.NoError(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -127,7 +127,7 @@ func TestLogin(t *testing.T) {
 		_, _, err = authService.Login(dto.LoginRequestDto{
 			Login:    user.Email,
 			Password: password,
-		}, gofakeit.UUID())
+		})
 		assert.NoError(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -136,7 +136,7 @@ func TestLogin(t *testing.T) {
 		_, _, err = authService.Login(dto.LoginRequestDto{
 			Login:    "invalid_email",
 			Password: password,
-		}, gofakeit.UUID())
+		})
 		assert.Error(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -145,7 +145,7 @@ func TestLogin(t *testing.T) {
 		_, _, err = authService.Login(dto.LoginRequestDto{
 			Login:    "invalid_nickname",
 			Password: password,
-		}, gofakeit.UUID())
+		})
 		assert.Error(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -154,7 +154,7 @@ func TestLogin(t *testing.T) {
 		_, _, err = authService.Login(dto.LoginRequestDto{
 			Login:    user.Nickname,
 			Password: "invalid_password",
-		}, gofakeit.UUID())
+		})
 		assert.Error(t, err)
 		userRepo.AssertExpectations(t)
 		tokenRepo.AssertExpectations(t)
@@ -178,7 +178,7 @@ func TestRefresh(t *testing.T) {
 		Password: hashPassword,
 	}
 
-	refresh, err := utils.GenerateRefreshJWT(user.ID.Hex())
+	refresh, err := jwt.GenerateRefreshJWT(user.ID.Hex())
 	tokenRepo.
 		On("GetRefreshToken", refresh).
 		Return(domain.RefreshToken{
@@ -219,7 +219,7 @@ func TestLogout(t *testing.T) {
 	userRepo := new(mocks.UserRepository)
 	tokenRepo := new(mocks.RefreshTokenRepository)
 
-	refresh, err := utils.GenerateRefreshJWT(gofakeit.UUID())
+	refresh, err := jwt.GenerateRefreshJWT(gofakeit.UUID())
 	tokenRepo.
 		On("DeleteRefreshToken", refresh).
 		Return(nil)
