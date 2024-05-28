@@ -9,6 +9,10 @@ type User struct {
 	mgm.DefaultModel `bson:",inline"`
 	Nickname         string `bson:"nickname"`
 	Email            string `bson:"email"`
+	Phone            string `bson:"phone"`
+	LastName         string `bson:"last_name"`
+	Name             string `bson:"name"`
+	Patronymic       string `bson:"patronymic"`
 	Password         string `bson:"password"`
 }
 

@@ -6,9 +6,10 @@ import (
 	"booking-auth-service/internal/core/ports/errors"
 	"booking-auth-service/pkg/logging"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"os"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type AuthHandler struct {
@@ -60,7 +61,15 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("refreshToken", refresh, refreshTokenExp, "/", os.Getenv("COOKIE_HOST"), false, true)
+	c.SetCookie(
+		"refreshToken",
+		refresh,
+		refreshTokenExp,
+		"/",
+		os.Getenv("COOKIE_HOST"),
+		false,
+		true,
+	)
 	c.JSON(201, dto.AuthResponseDto{
 		Access:  access,
 		Refresh: refresh,
@@ -104,7 +113,15 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("refreshToken", refresh, refreshTokenExp, "/", os.Getenv("COOKIE_HOST"), false, true)
+	c.SetCookie(
+		"refreshToken",
+		refresh,
+		refreshTokenExp,
+		"/",
+		os.Getenv("COOKIE_HOST"),
+		false,
+		true,
+	)
 	c.JSON(200, dto.AuthResponseDto{
 		Access:  access,
 		Refresh: refresh,
@@ -148,7 +165,15 @@ func (h *AuthHandler) Refresh(c *gin.Context) {
 		return
 	}
 
-	c.SetCookie("refreshToken", refresh, refreshTokenExp, "/", os.Getenv("COOKIE_HOST"), false, true)
+	c.SetCookie(
+		"refreshToken",
+		refresh,
+		refreshTokenExp,
+		"/",
+		os.Getenv("COOKIE_HOST"),
+		false,
+		true,
+	)
 	c.JSON(200, dto.AuthResponseDto{
 		Access:  access,
 		Refresh: refresh,

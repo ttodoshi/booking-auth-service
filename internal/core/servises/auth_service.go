@@ -8,6 +8,7 @@ import (
 	"booking-auth-service/pkg/jwt"
 	"booking-auth-service/pkg/logging"
 	"booking-auth-service/pkg/password"
+
 	"github.com/jinzhu/copier"
 )
 
@@ -17,7 +18,11 @@ type AuthService struct {
 	log       logging.Logger
 }
 
-func NewAuthService(userRepo ports.UserRepository, tokenRepo ports.RefreshTokenRepository, log logging.Logger) ports.AuthService {
+func NewAuthService(
+	userRepo ports.UserRepository,
+	tokenRepo ports.RefreshTokenRepository,
+	log logging.Logger,
+) ports.AuthService {
 	return &AuthService{
 		userRepo:  userRepo,
 		tokenRepo: tokenRepo,
@@ -25,7 +30,9 @@ func NewAuthService(userRepo ports.UserRepository, tokenRepo ports.RefreshTokenR
 	}
 }
 
-func (s *AuthService) Register(registerRequestDto dto.RegisterRequestDto) (access string, refresh string, err error) {
+func (s *AuthService) Register(
+	registerRequestDto dto.RegisterRequestDto,
+) (access string, refresh string, err error) {
 	var user domain.User
 
 	registerRequestDto.Password, err = password.HashPassword(registerRequestDto.Password)
@@ -51,7 +58,9 @@ func (s *AuthService) Register(registerRequestDto dto.RegisterRequestDto) (acces
 	return
 }
 
-func (s *AuthService) Login(loginRequestDto dto.LoginRequestDto) (access string, refresh string, err error) {
+func (s *AuthService) Login(
+	loginRequestDto dto.LoginRequestDto,
+) (access string, refresh string, err error) {
 	var user domain.User
 	user, err = s.userRepo.GetUserByNickname(loginRequestDto.Login)
 	if err != nil {
@@ -97,7 +106,9 @@ func (s *AuthService) Refresh(oldRefreshToken string) (access string, refresh st
 	return
 }
 
-func (s *AuthService) generateTokens(user domain.User) (accessToken string, refreshToken string, err error) {
+func (s *AuthService) generateTokens(
+	user domain.User,
+) (accessToken string, refreshToken string, err error) {
 	accessToken, err = jwt.GenerateAccessJWT(
 		user.ID.Hex(),
 		jwt.Claim{

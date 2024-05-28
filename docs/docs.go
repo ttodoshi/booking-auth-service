@@ -189,11 +189,20 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
+                "lastName",
+                "name",
                 "nickname",
-                "password"
+                "password",
+                "phone"
             ],
             "properties": {
                 "email": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "nickname": {
@@ -202,6 +211,12 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "minLength": 8
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
                 }
             }
         }

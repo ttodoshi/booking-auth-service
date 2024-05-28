@@ -22,15 +22,26 @@ definitions:
     properties:
       email:
         type: string
+      lastName:
+        type: string
+      name:
+        type: string
       nickname:
         type: string
       password:
         minLength: 8
         type: string
+      patronymic:
+        type: string
+      phone:
+        type: string
     required:
     - email
+    - lastName
+    - name
     - nickname
     - password
+    - phone
     type: object
 host: localhost:8090
 info:
